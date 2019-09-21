@@ -3,6 +3,7 @@ import 'package:forms_validations/src/pages/404/404.dart';
 import 'package:forms_validations/src/pages/home/homePage.dart';
 import 'package:forms_validations/src/pages/login/loginPage.dart';
 import 'package:forms_validations/src/pages/login/registerPage.dart';
+import 'package:forms_validations/src/pages/products/productPage.dart';
 import 'package:forms_validations/src/providers/provider.dart';
 
 void main() => runApp(Run());
@@ -14,7 +15,7 @@ class Run extends StatelessWidget {
         child: MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Material App',
-      initialRoute: 'login',
+      initialRoute: '/',
       routes: {
         '/': (BuildContext context) {
           return HomePage();
@@ -24,6 +25,9 @@ class Run extends StatelessWidget {
         },
         'register': (BuildContext context) {
           return RegisterPage();
+        },
+        'product': (BuildContext context) {
+          return ProductPage();
         }
       },
       onGenerateRoute: (RouteSettings settings) {

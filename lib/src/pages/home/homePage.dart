@@ -87,13 +87,5 @@ class HomePage extends StatelessWidget {
         productProvider.deleteOne(product.id);
       },
     );
-
-/*     ListTile(
-        title: Text(product.title),
-        subtitle: Text(product.id),
-        onTap: () {
-          Navigator.of(context).pushNamed('product',arguments: product);
-        },
-      ) */
   }
 }

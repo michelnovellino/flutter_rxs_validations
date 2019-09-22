@@ -1,9 +1,12 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:forms_validations/src/providers/provider.dart';
+import 'package:forms_validations/src/providers/user.provider.dart';
+import 'package:forms_validations/src/utils/validation.utils.dart';
 
 class LoginPage extends StatelessWidget {
+  final UserProvider userProvider = UserProvider();
+  dynamic _auth = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,7 +18,6 @@ class LoginPage extends StatelessWidget {
 
   Widget _renderBackground(BuildContext context) {
     final _screenSize = MediaQuery.of(context).size;
-
     final Widget _background = Container(
       height: _screenSize.height * .45,
       width: double.infinity,
@@ -101,8 +103,9 @@ class LoginPage extends StatelessWidget {
                 SizedBox(
                   height: 20.0,
                 ),
-                _forgotButton(),
-                _submit(bloc)
+                _registerButton(context),
+                _submit(bloc),
+                _forgotButton(context)
               ],
             ),
           )
@@ -181,24 +184,46 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  _login(LoginBloc bloc, BuildContext context) {
-    print('======');
-    print('email: ${bloc.email}');
-    print('password: ${bloc.password}');
-
+  _login(LoginBloc bloc, BuildContext context) async {
     if (bloc.email != null && bloc.password != null) {
-      Navigator.of(context).pushNamed('/');
+      _auth = await userProvider.login(bloc.email, bloc.password).then((response) {
+        return response;
+      });
+
+      if (_auth['ok'] != false) {
+        Navigator.of(context)
+            .pushReplacementNamed('/', arguments: _auth['user']);
+      }else{
+        showAlert(context, 'Invalid email or password');
+      }
     }
   }
 
-  Widget _forgotButton() {
-    return OutlineButton(
-      child: Text('forgot password?'),
-      textColor: Colors.deepPurpleAccent,
-      disabledBorderColor: Colors.white,
-      borderSide: BorderSide(color: Colors.white),
-      highlightElevation: 0.0,
-      onPressed: () {},
+  Widget _forgotButton(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 0),
+      padding: EdgeInsets.symmetric(vertical: 0),
+      child: FlatButton(
+        padding: EdgeInsets.symmetric(vertical: 0),
+        child: Text('forgot password?'),
+        textColor: Colors.deepPurpleAccent,
+        onPressed: () {},
+      ),
     );
+  }
+
+  Widget _registerButton(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.symmetric(vertical: 0),
+        margin: EdgeInsets.symmetric(vertical: 0),
+        child: MaterialButton(
+          height: 10,
+          padding: EdgeInsets.symmetric(vertical: 0),
+          child: Text('register'),
+          textColor: Colors.deepPurpleAccent,
+          onPressed: () {
+            Navigator.of(context).pushNamed('register');
+          },
+        ));
   }
 }

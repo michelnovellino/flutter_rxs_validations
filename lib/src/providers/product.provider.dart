@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:forms_validations/src/models/product.model.dart';
+import 'package:forms_validations/src/preferences/user.preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
@@ -10,8 +11,9 @@ import 'package:mime_type/mime_type.dart';
 class ProductsProvider {
   final baseUrl = 'https://flutter-shop-ebb1c.firebaseio.com/';
   final cloudinaryUrl = Uri.parse('https://api.cloudinary.com/v1_1/di3vwjpzq/image/upload?upload_preset=ehne3fhx');
+  final _prefs = UserPreferences();
   Future<List<ProductModel>> getAll() async {
-    final url = '$baseUrl/products.json';
+    final url = '$baseUrl/products.json?auth=${_prefs.token}';
     final result = await http.get(url);
     final Map<String, dynamic> decoded = json.decode(result.body);
     print('decoded data $decoded');
@@ -29,7 +31,7 @@ class ProductsProvider {
   }
 
   Future<bool> add(ProductModel product) async {
-    final url = '$baseUrl/products.json';
+    final url = '$baseUrl/products.json?auth=${_prefs.token}';
     final result = await http.post(url, body: productModelToJson(product));
     final decoded = json.decode(result.body);
 
@@ -39,7 +41,7 @@ class ProductsProvider {
   Future<bool> edit(ProductModel product) async {
     final id = product.id;
 
-    final url = '$baseUrl/products/$id.json';
+    final url = '$baseUrl/products/$id.json?auth=${_prefs.token}';
     final result = await http.put(url, body: productModelToJson(product));
     final decoded = json.decode(result.body);
       print('decoded data $decoded');
@@ -47,7 +49,7 @@ class ProductsProvider {
   }
 
   Future<int> deleteOne(String id) async {
-    final url = '$baseUrl/products/$id.json';
+    final url = '$baseUrl/products/$id.json?auth=${_prefs.token}';
     final result = await http.delete(url);
     return 1;
   }
